@@ -1,0 +1,39 @@
+schema: spec-driven
+
+# Project context: shown to AI when creating artifacts.
+context: |
+  Tech stack: JavaScript, PHP
+  We use conventional commits
+  Domain: open source
+  App: stock app (aktiediagram) with a browser UI: interactive comparison chart, transaction form/list and portfolio results.
+  Hosting: PHP port of an original local Python app, running on one.com shared web hosting. No Python and no long-running server process; PHP handles requests, JavaScript runs in the browser.
+  The `aktiediagram` spec still describes the Python app; adapt its Python, loopback-server, Ctrl+C and `~/Downloads` details to the hosted PHP setup.
+  Language: specs and UI text are Swedish; quote UI labels and file names verbatim.
+  Data files: `aktier.csv` (stock list, created from `aktier.example.csv`, max 50), `aktiekop.csv` (semicolon-separated transactions), `aktievy.json` (saved view), generated `aktier_graf.html`.
+  Market data: Yahoo Finance daily/intraday prices; results in SEK, foreign holdings converted with FX rates.
+  Dates: ISO `YYYY-MM-DD`, Swedish time zone.
+
+# Per-artifact rules
+rules:
+  proposal:
+    - Name the affected requirements in the `aktiediagram` spec
+  specs:
+    - Write requirements and scenarios in Swedish, using SHALL and bold WHEN/THEN/AND
+    - Extend the `aktiediagram` capability unless the change is clearly a separate capability
+  design:
+    - Keep existing `aktiekop.csv` and `aktier.csv` formats backward compatible, or describe the migration
+    - Keep broker imports idempotent
+    - Use only PHP and browser JavaScript that run on one.com shared hosting; no Python, daemons or shell access
+  tasks:
+    - Include a manual check in the running app for UI changes
+
+# Per-operation guidance
+operations:
+  apply:
+    guidance:
+      - Do not overwrite or add test data to the user's `aktier.csv` or `aktiekop.csv`
+      - Keep broker imports preview-first; write to `aktiekop.csv` only after explicit confirmation
+      - Do not add Python code or dependencies
+  archive:
+    guidance:
+      - Merge deltas into `openspec/specs/aktiediagram/spec.md` in Swedish

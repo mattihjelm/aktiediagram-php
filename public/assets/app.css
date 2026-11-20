@@ -1,0 +1,190 @@
+/* Gemensam höjd för fält, listrutor och knappar i formuläret, Kurser och Datumintervall. */
+:root { --control-height: 35px; }
+body { margin: 0; }
+#stock-chart-layout { display: flex; flex-direction: column; gap: 8px; padding: 0 12px; }
+#stock-chart-title { margin: 12px 0 0; font: 600 24px sans-serif; color: #2a3f5f; }
+#top-controls-row { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: flex-start; gap: 12px; width: calc(100% - 92px); margin-left: 92px; box-sizing: border-box; }
+#top-controls-row #purchase-panel { margin-left: 0; max-width: 100%; }
+/* Kurser och Datumintervall på egen rad, med vänsterkanten linjerad med formulärets rubrik. */
+#refresh-controls { display: flex; flex-wrap: wrap; align-items: end; flex-basis: 100%; justify-content: flex-start; gap: 10px; margin-left: 0; max-width: 100%; font: 14px sans-serif; }
+#refresh-controls h2 { margin: 0 0 12px; font-size: 19px; }
+#quote-controls { display: flex; flex-direction: column; gap: 0; }
+#quote-buttons { display: flex; align-items: end; gap: 8px; }
+#refresh-data-button, #current-price-button { box-sizing: border-box; height: var(--control-height); padding: 0 11px; line-height: 1; font-size: 16px; cursor: pointer; }
+#visible-date-controls { display: flex; flex-direction: column; align-items: flex-start; gap: 0; }
+#visible-date-fields { display: flex; align-items: end; gap: 8px; }
+#visible-date-controls label { display: grid; gap: 3px; }
+#visible-date-controls label span { font-size: 13px; }
+#visible-date-controls input { box-sizing: border-box; width: 12ch; padding: 6px; font: inherit; }
+#visible-date-controls input:not([type=checkbox]) { height: var(--control-height); }
+#visible-date-controls #scale-group { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; min-height: 34px; margin-left: 8px; }
+#visible-date-controls #scale-group label { display: flex; align-items: center; gap: 4px; white-space: nowrap; cursor: pointer; }
+#visible-date-controls #scale-group input { width: auto; margin: 0; padding: 0; }
+#visible-date-status { color: #a33; }
+#refresh-data-status { color: #435064; }
+#visible-date-status, #refresh-data-status { text-align: right; }
+#stock-chart-viewport { display: flex; align-items: stretch; gap: 14px; width: 100%; min-width: 0; }
+#stock-chart-viewport > .plotly-graph-div { box-sizing: border-box; flex: 1 1 auto; width: 0 !important; min-width: 0; height: 82vh !important; min-height: 650px; }
+#stock-custom-legend { box-sizing: border-box; flex: 0 0 clamp(396px, 37vw, 552px); max-height: max(650px, 82vh); overflow: auto; padding: 46px 8px 10px 0; font: 17px sans-serif; }
+.stock-legend-row { display: grid; grid-template-columns: 34px minmax(0, 1fr); align-items: start; gap: 5px; padding: 4px 0; border-bottom: 1px solid #e8ebef; }
+.stock-legend-header { position: sticky; top: 0; z-index: 1; display: grid; grid-template-columns: 34px minmax(0, 1fr); align-items: center; gap: 5px; padding: 6px 0; background: white; border-bottom: 1px solid #cbd2dc; font-weight: 600; }
+.stock-legend-header span { font-size: 14.5px; }
+.stock-legend-help { grid-column: 1 / -1; color: #576273; font-size: 14.5px; font-weight: 400; }
+.stock-legend-sort { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 4px; }
+.stock-legend-sort button { padding: 2px 8px; border: 1px solid #cbd2dc; border-radius: 4px; background: white; color: #263448; font: inherit; font-size: 14.5px; font-weight: 400; cursor: pointer; }
+.stock-legend-sort button[aria-pressed="true"] { border-color: #263448; background: #263448; color: white; }
+.stock-legend-row input { margin: 2px 0 0; }
+.stock-legend-name { border: 0; padding: 0; background: transparent; color: #1b2432; cursor: pointer; font: inherit; text-align: left; }
+.stock-legend-name:hover { text-decoration: underline; }
+.stock-legend-profit { display: block; color: #1e2631; font-size: 14.5px; line-height: 1.35; }
+.stock-legend-row.is-hidden .stock-legend-name, .stock-legend-row.is-hidden .stock-legend-profit { opacity: .48; }
+.stock-legend-search { grid-column: 1 / -1; display: flex; align-items: center; gap: 6px; font-weight: 400; }
+.stock-legend-search input { box-sizing: border-box; flex: 1 1 auto; min-width: 0; height: 30px; padding: 0 8px; border: 1px solid #cbd2dc; border-radius: 4px; color: #1b2432; font: inherit; font-size: 14.5px; }
+.stock-legend-empty { margin: 8px 0; color: #576273; font-size: 14.5px; }
+#purchase-panel, #purchase-list { margin-left: 92px; }
+#purchase-panel { box-sizing: border-box; width: fit-content; max-width: calc(100% - 92px); align-self: flex-start; font: 15px sans-serif; margin-top: 0; margin-right: 0; margin-bottom: 0; padding: 0; border: 0; }
+#purchase-panel h2 { margin: 0 0 12px; font-size: 19px; }
+#purchase-form { display: grid; grid-template-columns: repeat(9, max-content); align-items: end; gap: 12px; }
+#purchase-form label { display: grid; gap: 5px; }
+#purchase-form input, #purchase-form select, #purchase-form button { box-sizing: border-box; width: 100%; min-width: 0; font: inherit; padding: 7px 9px; }
+#purchase-form input:not([type=checkbox]), #purchase-form select { height: var(--control-height); }
+#purchase-ticker { width: max-content !important; max-width: min(38vw, 32ch); }
+#purchase-type { width: max-content !important; }
+#purchase-date { width: 16ch !important; min-width: 16ch; }
+/* 6ch text plus 2 × 9 px utfyllnad och 2 × 1 px kant, som tidigare med content-box. */
+#purchase-quantity { width: calc(6ch + 20px) !important; min-width: calc(6ch + 20px); }
+#purchase-price-label { width: max-content; }
+#purchase-price { width: 100% !important; min-width: 0; }
+#purchase-commission { width: 8ch !important; min-width: 8ch; }
+/* Kontot är en bokstav; fältet behöver bara plats för den. */
+#purchase-form #purchase-account, #import-account { width: 3.2em; min-width: 3.2em; padding-left: 6px; padding-right: 6px; text-align: center; text-transform: uppercase; }
+#import-account-label { display: inline-flex; align-items: center; gap: 4px; }
+#import-account { box-sizing: border-box; height: var(--control-height); padding: 0 8px; font: inherit; }
+#purchase-form button { box-sizing: border-box; width: auto; height: var(--control-height); padding: 0 11px; line-height: 1; font-size: 16px; white-space: nowrap; }
+#purchase-status { max-width: 60ch; margin: 12px 0 0; color: #435064; }
+#purchase-total { align-self: end; white-space: nowrap; margin: 0 0 8px; font-weight: 600; color: #263448; }
+#purchase-list { width: fit-content; max-width: calc(100% - 92px); box-sizing: border-box; margin-top: 12px; margin-right: 0; margin-bottom: 28px; padding: 0; border: 0; font: 15px sans-serif; }
+#purchase-list h2 { margin: 0; font-size: 19px; }
+.transaction-list-heading { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: 12px; }
+#import-events-button { padding: 7px 11px; cursor: pointer; white-space: nowrap; }
+#toggle-dividends-button { padding: 7px 11px; cursor: pointer; white-space: nowrap; }
+#sort-purchases-by-stock { padding: 0; border: 0; background: none; color: inherit; font: inherit; font-weight: 600; text-decoration: underline dotted; cursor: pointer; }
+#import-events-file { max-width: 280px; font: 14px sans-serif; }
+#show-unmapped-button { margin-left: 8px; padding: 5px 9px; cursor: pointer; }
+#import-events-default { flex-basis: 100%; color: #576273; font-size: 12px; }
+#import-events-status { min-height: 1.2em; margin: 0 0 8px; color: #435064; }
+#unmapped-rows-dialog { width: min(1200px, 94vw); max-width: 94vw; max-height: 88vh; box-sizing: border-box; padding: 18px; border: 1px solid #aab3c0; border-radius: 8px; }
+#unmapped-rows-dialog::backdrop { background: rgb(18 27 41 / 45%); }
+#unmapped-rows-dialog h2 { margin: 0 0 12px; }
+#unmapped-rows-content { max-width: 100%; max-height: 70vh; overflow: auto; border: 1px solid #d4dae2; }
+#unmapped-rows-content table { width: max-content; max-width: none; border-collapse: collapse; text-align: left; font: 13px sans-serif; }
+#unmapped-rows-content th, #unmapped-rows-content td { max-width: 360px; padding: 6px 8px; border-bottom: 1px solid #e1e5eb; white-space: nowrap; }
+#unmapped-rows-content td { overflow: hidden; text-overflow: ellipsis; }
+#unmapped-rows-content th { position: sticky; top: 0; z-index: 1; background: #f3f5f8; }
+.unmapped-dialog-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 12px; }
+#purchase-list table { width: max-content; max-width: 100%; border-collapse: collapse; text-align: left; }
+#purchase-list th, #purchase-list td { padding: 7px 9px; border-bottom: 1px solid #e1e5eb; white-space: nowrap; }
+#purchase-list th { background: #f3f5f8; }
+#purchase-list td.number { text-align: right; font-variant-numeric: tabular-nums; }
+#purchase-list-content { width: max-content; max-width: 100%; max-height: 320px; overflow: auto; }
+#purchase-list-content thead th { position: sticky; top: 0; z-index: 1; }
+#transaction-tables { display: grid; grid-template-columns: minmax(0, 1fr); align-items: start; column-gap: 8px; row-gap: 0; width: calc(100% - 92px); margin: 12px 0 28px 92px; box-sizing: border-box; }
+#transaction-tables > section { display: contents; font: 15px sans-serif; }
+#transaction-tables .transaction-panel-controls { min-width: 0; box-sizing: border-box; padding: 0 0 10px; }
+#transaction-list-controls { grid-column: 1; grid-row: 5; }
+#portfolio-summary-controls { grid-column: 1; grid-row: 2; display: flex; align-items: flex-start; flex-wrap: wrap; gap: 14px; }
+#purchase-list-content { grid-column: 1; grid-row: 6; }
+#portfolio-summary-content { grid-column: 1; grid-row: 3; max-width: 100%; overflow-x: auto; }
+#purchase-list > h2 { grid-column: 1; grid-row: 4; }
+#portfolio-summary > h2 { grid-column: 1; grid-row: 1; }
+#portfolio-summary-controls label { display: inline-flex; align-items: center; gap: 7px; }
+#transaction-tables h2 { margin: 0 0 12px; font-size: 19px; }
+#transaction-tables #purchase-list > h2 { margin-top: 24px; }
+/* Transaktioner till höger om Resultat när båda ryms (panel.js sätter klassen). */
+#transaction-tables.side-by-side { grid-template-columns: max-content minmax(0, 1fr); column-gap: 24px; }
+#transaction-tables.side-by-side #purchase-list > h2 { grid-column: 2; grid-row: 1; margin-top: 0; }
+#transaction-tables.side-by-side #transaction-list-controls { grid-column: 2; grid-row: 2; }
+#transaction-tables.side-by-side #purchase-list-content { grid-column: 2; grid-row: 3; }
+#transaction-tables table { width: max-content; max-width: 100%; border-collapse: collapse; text-align: left; }
+#transaction-tables th, #transaction-tables td { padding: 5px 6px; border-bottom: 1px solid #e1e5eb; white-space: nowrap; }
+/* Rubriker får brytas på två rader; värden stannar på en rad. */
+#transaction-tables th { white-space: normal; vertical-align: bottom; }
+#transaction-tables th { background: #f3f5f8; }
+#transaction-tables td.number { text-align: right; font-variant-numeric: tabular-nums; }
+.transaction-table-content { max-width: 100%; overflow-x: auto; }
+#portfolio-summary-content table { width: max-content; table-layout: auto; }
+#portfolio-summary-content td.current-price-updated { font-style: italic; }
+#portfolio-summary-content th, #portfolio-summary-content td { padding: 5px 6px; }
+#portfolio-summary-content th:last-child, #portfolio-summary-content td:last-child { width: 34px; padding: 3px; text-align: center; }
+.portfolio-row-update { display: inline-grid; place-items: center; width: 28px; height: 28px; padding: 3px; }
+.portfolio-row-update svg { display: block; width: 18px; height: 18px; }
+.transaction-delete-cell { white-space: nowrap; }
+.transaction-delete-cell button { padding: 2px 8px; margin-left: 4px; cursor: pointer; }
+.transaction-delete-confirm { color: #a33; font-weight: 600; }
+@media (max-width: 900px) { #stock-chart-viewport { flex-direction: column; } #stock-chart-viewport > .plotly-graph-div { flex: none; width: 100% !important; height: 70vh !important; min-height: 520px; } #stock-custom-legend { flex: 0 1 auto; width: 100%; max-height: 280px; padding: 8px; border: 1px solid #e1e5eb; } #top-controls-row { width: calc(100% - 92px); margin-left: 92px; justify-content: flex-start; } #top-controls-row #purchase-panel { max-width: 100%; margin-right: auto; } #purchase-list { max-width: calc(100% - 92px); } #refresh-controls { margin-left: 0; } #purchase-panel, #purchase-list { margin-left: 92px; } #transaction-tables { width: calc(100% - 92px); margin-left: 92px; } #purchase-form { grid-template-columns: repeat(2, max-content); } #purchase-form button { grid-column: 1 / -1; justify-self: start; } #purchase-total { grid-column: 1 / -1; justify-self: start; margin: 0; } }
+
+/* Tillägg för webbhotellsversionen: inloggning, utloggning, laddning och fel. */
+[hidden] { display: none !important; }
+#logout-form { position: absolute; top: 12px; right: 12px; margin: 0; }
+#logout-form button { padding: 6px 10px; font: 14px sans-serif; cursor: pointer; }
+#chart-loading-status { margin: 60px 104px; font: 16px sans-serif; color: #435064; }
+#chart-loading-status.is-error, .app-error p { color: #a33; }
+.app-error { margin: 60px 104px; font: 16px sans-serif; }
+#import-preview-actions { display: flex; gap: 8px; margin: 0 0 8px; }
+#import-preview-actions button { padding: 6px 10px; cursor: pointer; }
+.login-page { display: grid; min-height: 100vh; place-items: center; background: #f3f5f8; font: 16px sans-serif; color: #263448; }
+.login-box { box-sizing: border-box; width: min(360px, calc(100vw - 32px)); padding: 28px; background: white; border: 1px solid #d4dae2; border-radius: 8px; }
+.login-box h1 { margin: 0 0 18px; font-size: 22px; }
+.login-box form { display: grid; gap: 14px; }
+.login-box label { display: grid; gap: 6px; }
+.login-box input, .login-box button { box-sizing: border-box; width: 100%; padding: 9px; font: inherit; }
+.login-box button { cursor: pointer; }
+.login-error { margin: 14px 0 0; color: #a33; }
+#intraday-panel { box-sizing: border-box; width: calc(100% - clamp(330px, 31vw, 460px) - 14px); font: 14px sans-serif; }
+#intraday-panel[hidden] { display: none; }
+#intraday-header { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin-left: 92px; }
+#intraday-title { margin: 0; font-size: 19px; color: #2a3f5f; }
+#intraday-range { display: flex; gap: 0; }
+#intraday-range button { padding: 5px 12px; border: 1px solid #b8c1cc; background: white; font: inherit; cursor: pointer; }
+#intraday-range button + button { border-left: 0; }
+#intraday-range button[aria-pressed="true"] { background: #2a3f5f; border-color: #2a3f5f; color: white; }
+#intraday-status { margin: 0; color: #576273; }
+#intraday-download { color: #2a3f5f; }
+#intraday-download[hidden] { display: none; }
+#intraday-download-row { white-space: nowrap; color: #576273; }
+#intraday-archive.is-error { color: #b42318; white-space: normal; }
+#intraday-status.is-error { color: #b42318; }
+#intraday-chart { width: 100%; height: 420px; }
+#intraday-plot { position: relative; }
+#intraday-pin { position: absolute; z-index: 5; display: flex; flex-direction: column; gap: 3px; padding: 6px 8px; background: white; border: 1px solid #b8c1cc; border-radius: 4px; box-shadow: 0 2px 6px rgba(0, 0, 0, .15); font: 13px sans-serif; white-space: nowrap; }
+#intraday-pin[hidden] { display: none; }
+#intraday-pin-price { font-size: 15px; color: #263448; }
+#intraday-pin-buttons { display: flex; gap: 4px; margin-top: 2px; }
+#intraday-pin-buttons button { min-width: 30px; padding: 2px 6px; border: 1px solid #b8c1cc; background: white; font: inherit; cursor: pointer; }
+#intraday-pin-buttons button:disabled { opacity: .4; cursor: default; }
+@media (max-width: 900px) { #intraday-panel { width: 100%; } #intraday-chart { height: 360px; } }
+
+/* Telefonlayout: minutdiagrammet först, mindre text och inga vänsterindrag. */
+@media (max-width: 600px), (pointer: coarse) and (max-height: 500px) {
+  #stock-chart-layout { padding: 0 8px; }
+  #stock-chart-layout > #intraday-panel { order: -1; }
+  #stock-chart-layout > #top-controls-row { order: 1; }
+  #stock-chart-layout > #transaction-tables { order: 2; }
+  #stock-chart-layout, #stock-chart-layout * { font-size: 13px; }
+  #stock-chart-layout h1, #stock-chart-layout h2, #intraday-title { font-size: 16px; }
+  /* Rubrikerna ovanför diagrammen: hälften av övriga rubriker. */
+  #stock-chart-layout #stock-chart-title, #stock-chart-layout #intraday-title { font-size: 8px; }
+  /* Arkivtexten börjar på samma rad som länken men får brytas, så att sidan inte rullar i sidled. */
+  #intraday-download-row { white-space: normal; }
+  /* Skala på egen rad under datumfälten, så att kryssrutorna inte sticker ut till höger. */
+  #visible-date-fields { flex-wrap: wrap; }
+  #visible-date-controls #scale-group { flex-basis: 100%; margin-left: 0; }
+  #visible-date-controls #scale-group label { white-space: normal; }
+  :root { --control-height: 33px; }
+  #purchase-form button, #refresh-data-button, #current-price-button { font-size: 13px; }
+  #top-controls-row, #transaction-tables { width: 100%; margin-left: 0; }
+  #purchase-panel, #purchase-list { max-width: 100%; margin-left: 0; }
+  #intraday-header { margin-left: 0; }
+  #intraday-chart { height: 300px; }
+  #stock-chart-viewport > .plotly-graph-div { height: 60vh !important; min-height: 380px; }
+}

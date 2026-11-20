@@ -1,0 +1,21 @@
+# Tvinga HTTPS (även bakom webbhotellets proxy).
+RewriteEngine On
+RewriteCond %{HTTPS} !=on
+RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+Options -Indexes
+DirectoryIndex index.php
+
+# Den privata katalogen, om den ligger i webbroten, och dolda filer nås aldrig direkt.
+RedirectMatch 404 ^/(.*/)?private(/|$)
+RedirectMatch 404 /\.(?!well-known)
+<FilesMatch "\.(csv|json|lock|log|md|txt|example)$">
+    Require all denied
+</FilesMatch>
+<Files "paths.php">
+    Require all denied
+</Files>
+<Files "_bootstrap.php">
+    Require all denied
+</Files>

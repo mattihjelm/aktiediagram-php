@@ -1,0 +1,4 @@
+# Allt i den privata katalogen är stängt för webben. Den här filen behövs bara
+# om katalogen ligger inuti webbroten; utanför webbroten nås den aldrig.
+Require all denied
+Options -Indexes

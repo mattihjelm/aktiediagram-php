@@ -1,0 +1,25 @@
+# Konfiguration med lösenordshash och all lokal data hålls utanför Git.
+private/config.php
+private/data/*
+!private/data/.htaccess
+!private/data/index.html
+private/sessions/
+.DS_Store
+*~
+
+# Lokala uppgifter och tidsstämpel för deploy.sh.
+.deploy.env
+.deploy-stamp
+
+# Playwright-tester (lokala).
+node_modules/
+test-results/
+playwright-report/
+
+# Lokala anteckningar som inte hör till appen.
+/put
+/alternativ API för aktier istället för yahoo
+
+# Original av openspec med riktiga portföljuppgifter (före anonymisering), bara lokalt.
+/openspec-original-*.tar.gz
+\#*#
