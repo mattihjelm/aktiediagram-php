@@ -40,9 +40,7 @@ run_api(['POST'], static function () {
     if (array_key_exists('last_solo', $payload)) {
         // null tömmer värdet när solo avslutas; annars ett värdepapper: en aktie i listan, eventuellt med konto ("TICKER|K").
         $series = $payload['last_solo'];
-        [$ticker, $account] = is_string($series) ? array_pad(explode('|', $series, 2), 2, null) : [null, null];
-        $validAccount = $account === null || preg_match('/^[A-Z]$/', $account);
-        if ($series !== null && (!$validAccount || !in_array($ticker, array_column(Stocks::load(), 'ticker'), true))) {
+        if ($series !== null && !Chart::isSeriesKey($series, array_column(Stocks::load(), 'ticker'))) {
             send_json(400, ['error' => 'Aktien finns inte i appens lista.']);
             return;
         }
@@ -54,6 +52,17 @@ run_api(['POST'], static function () {
             return;
         }
         $changes['legend_sort'] = $payload['legend_sort'];
+    }
+    if (array_key_exists('legend_selected', $payload)) {
+        // Gruppen för sorteringen Valda: en lista med värdepappersnycklar i den ordning de lades till.
+        $selected = $payload['legend_selected'];
+        $tickers = array_column(Stocks::load(), 'ticker');
+        if (!is_array($selected) || $selected !== array_values($selected) || count($selected) > 500
+            || array_filter($selected, static fn($series) => !Chart::isSeriesKey($series, $tickers))) {
+            send_json(400, ['error' => 'Ogiltig grupp av valda värdepapper.']);
+            return;
+        }
+        $changes['legend_selected'] = array_values(array_unique($selected));
     }
     if (!$changes) {
         send_json(400, ['error' => 'Ingen vyinställning angavs.']);

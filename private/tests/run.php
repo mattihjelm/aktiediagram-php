@@ -376,6 +376,30 @@ Chart::saveView(['legend_sort' => 'slump']);
 check('ogiltig legend_sort ignoreras', null, Chart::legendSort());
 Chart::saveView(['legend_sort' => 'none']);
 
+// Sorteringen Valda och dess sparade grupp.
+check('ingen sparad grupp ger null', null, Chart::legendSelected(['SAAB-B.ST', 'VOLV-B.ST']));
+Chart::saveView(['legend_sort' => 'selected', 'legend_selected' => ['VOLV-B.ST', 'SAAB-B.ST|T']]);
+$view = Storage::readJson(data_path('aktievy.json'));
+check('legend_sort selected läses', 'selected', Chart::legendSort());
+check('legend_selected sparas efter legend_sort och övriga nycklar behålls', ['start', 'end', 'log_scale', 'scale', 'last_solo', 'legend_sort', 'legend_selected'], array_keys($view));
+check('legend_selected läses i sparad ordning', ['VOLV-B.ST', 'SAAB-B.ST|T'], Chart::legendSelected(['SAAB-B.ST|T', 'VOLV-B.ST']));
+Chart::saveView(['legend_selected' => ['OKAND.ST', 'VOLV-B.ST', 'VOLV-B.ST', 7, 'SAAB-B.ST']]);
+check('okända nycklar och dubbletter tas bort', ['VOLV-B.ST', 'SAAB-B.ST'], Chart::legendSelected(['SAAB-B.ST', 'VOLV-B.ST']));
+Chart::saveView(['legend_selected' => []]);
+check('tom grupp är en sparad grupp', [], Chart::legendSelected(['SAAB-B.ST']));
+check('tom grupp skrivs som lista', true, str_contains(file_get_contents(data_path('aktievy.json')), '"legend_selected": []'));
+check('series_visible sparas efter legend_selected', true, (static function () {
+    Chart::saveSeriesVisibility('SAAB-B.ST|T', true);
+    $keys = array_keys(Storage::readJson(data_path('aktievy.json')));
+    return array_search('series_visible', $keys, true) === array_search('legend_selected', $keys, true) + 1;
+})());
+check('värdepappersnyckel utan konto', true, Chart::isSeriesKey('SAAB-B.ST', ['SAAB-B.ST']));
+check('värdepappersnyckel med konto', true, Chart::isSeriesKey('SAAB-B.ST|T', ['SAAB-B.ST']));
+check('ogiltigt konto i värdepappersnyckel', false, Chart::isSeriesKey('SAAB-B.ST|tt', ['SAAB-B.ST']));
+check('okänd ticker i värdepappersnyckel', false, Chart::isSeriesKey('OKAND.ST', ['SAAB-B.ST']));
+check('värdepappersnyckel som inte är text', false, Chart::isSeriesKey(['SAAB-B.ST'], ['SAAB-B.ST']));
+Chart::saveView(static fn(array $view) => ['legend_sort' => 'none'] + array_diff_key($view, ['legend_selected' => 1, 'series_visible' => 1]));
+
 // Konto per transaktion: ett värdepapper per konto, namn med konto, solo och synlighet per värdepapper.
 file_put_contents(data_path('cache/ANNAN.ST.json'), json_encode(['dates' => ['2022-03-07', '2022-03-08'], 'close' => [50.0, 51.0], 'full_fetched_at' => time(), 'checked_at' => time()]));
 $accountStocks = [['ticker' => 'FOND.ST', 'name' => 'Fond', 'show_initially' => true], ['ticker' => 'ANNAN.ST', 'name' => 'Annan', 'show_initially' => false]];

@@ -42,7 +42,7 @@ test('inloggning öppnar appen med diagram och aktielegend', async ({page}) => {
   const names = await page.locator('#stock-custom-legend .stock-legend-name').evaluateAll(buttons =>
     buttons.map(button => button.firstChild.textContent));
   expect(names).toEqual(fixture.stocks.map(stock => stock.displayName));
-  for (const label of ['Osorterad', 'Namn', '%/mån', 'Total', 'Total %']) {
+  for (const label of ['Osorterad', 'Namn', '%/mån', 'Total', 'Total %', 'Valda']) {
     await expect(page.locator('.stock-legend-sort').getByRole('button', {name: label, exact: true})).toBeVisible();
   }
 });

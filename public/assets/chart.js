@@ -263,6 +263,7 @@ window.initStockChart = function(graph) {
       graph.data.forEach((trace, index) => {
         if (trace.meta && trace.meta.series === series) previous[index] = next;
       });
+      updateSelectedGroup(series, next);
       return applyVisibility(previous)
         .then(() => saveStockVisibility(series, next))
         .then(refreshFilteredTables);
@@ -270,6 +271,7 @@ window.initStockChart = function(graph) {
     const indices = graph.data.map((trace, index) =>
       trace.meta && trace.meta.series === series ? index : -1
     ).filter(index => index >= 0);
+    updateSelectedGroup(series, !stockVisible);
     return Plotly.restyle(
       graph,
       {visible: indices.map(() => stockVisible ? 'legendonly' : true)},
@@ -281,22 +283,52 @@ window.initStockChart = function(graph) {
     });
   }
   // Listans ordning: aktier.csv (none), namn (name), högst procent per månad (monthly), högst total avkastning i SEK (total)
-  // eller högst total avkastning i procent som i Resultat (total_percent) först.
-  const LEGEND_SORTS = [['none', 'Osorterad'], ['name', 'Namn'], ['monthly', '%/mån'], ['total', 'Total'], ['total_percent', 'Total %']];
+  // eller högst total avkastning i procent som i Resultat (total_percent) först, eller den sparade gruppen valda värdepapper
+  // överst (selected).
+  const LEGEND_SORTS = [['none', 'Osorterad'], ['name', 'Namn'], ['monthly', '%/mån'], ['total', 'Total'], ['total_percent', 'Total %'], ['selected', 'Valda']];
   let legendSort = LEGEND_SORTS.some(([key]) => key === (graph.layout.meta && graph.layout.meta.legendSort))
     ? graph.layout.meta.legendSort : 'none';
-  function setLegendSort(sort) {
-    legendSort = sort;
-    window.renderCustomLegend();
+  // Gruppen för Valda i den ordning värdepapperen lades till; null tills Valda väljs första gången.
+  let legendSelected = Array.isArray(graph.layout.meta && graph.layout.meta.legendSelected)
+    ? graph.layout.meta.legendSelected.slice() : null;
+  function saveLegendView(changes) {
     if (!window.apiFetch) return;
     window.apiFetch('api/view-range.php', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({legend_sort: sort}),
+      body: JSON.stringify(changes),
     }).catch(error => console.warn('Sorteringen kunde inte sparas:', error));
+  }
+  function setLegendSort(sort) {
+    const changes = {legend_sort: sort};
+    // Första gången blir gruppen de värdepapper som visas, i listans nuvarande ordning.
+    if (sort === 'selected' && legendSelected === null) {
+      legendSelected = legendEntries()
+        .filter(([, index]) => graph.data[index].visible !== 'legendonly' && graph.data[index].visible !== false)
+        .map(([series]) => series);
+      changes.legend_selected = legendSelected;
+    }
+    legendSort = sort;
+    window.renderCustomLegend();
+    saveLegendView(changes);
+  }
+  // Medan Valda är vald läggs ett värdepapper som visas sist i gruppen och ett som döljs tas bort; annars ändras inget.
+  function updateSelectedGroup(series, visible) {
+    if (legendSort !== 'selected' || legendSelected === null) return;
+    const before = legendSelected.length;
+    legendSelected = legendSelected.filter(key => key !== series);
+    if (visible) legendSelected.push(series);
+    if (visible || legendSelected.length !== before) saveLegendView({legend_selected: legendSelected});
   }
   function legendEntries() {
     const entries = Object.entries(stockTraceBySeries);
+    if (legendSort === 'selected' && legendSelected !== null) {
+      const selected = legendSelected.filter(series => stockTraceBySeries[series] !== undefined);
+      return [
+        ...selected.map(series => [series, stockTraceBySeries[series]]),
+        ...entries.filter(([series]) => !selected.includes(series)),
+      ];
+    }
     if (legendSort === 'name') {
       return entries.slice().sort(([, a], [, b]) =>
         graph.data[a].meta.displayName.localeCompare(graph.data[b].meta.displayName, 'sv'));

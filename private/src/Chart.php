@@ -5,7 +5,7 @@ declare(strict_types=1);
 final class Chart
 {
     /** Sorteringar av värdepapperslistan: ordningen i aktier.csv, namn, procent per månad eller total avkastning. */
-    public const LEGEND_SORTS = ['none', 'name', 'monthly', 'total', 'total_percent'];
+    public const LEGEND_SORTS = ['none', 'name', 'monthly', 'total', 'total_percent', 'selected'];
 
     private const PLOT_COLORS = [
         '#636EFA', '#EF553B', '#00CC96', '#AB63FA', '#FFA15A',
@@ -336,7 +336,9 @@ final class Chart
             ] + array_filter([
                 'lastSolo' => self::lastSolo(array_column($seriesList, 'key')),
                 'legendSort' => self::legendSort(),
-            ]),
+                // Gruppen för sorteringen Valda; en tom lista är en sparad men tom grupp och behålls.
+                'legendSelected' => self::legendSelected(array_column($seriesList, 'key')),
+            ], static fn($value) => $value !== null),
             'hovermode' => 'x unified',
             'hoverdistance' => 50,
             'spikedistance' => 50,
@@ -448,6 +450,29 @@ final class Chart
         return in_array($saved, self::LEGEND_SORTS, true) ? $saved : null;
     }
 
+    /**
+     * Sparad grupp för sorteringen Valda, i den ordning värdepapperen lades till, begränsad till $keys och utan dubbletter.
+     * null när ingen grupp är sparad. @param string[] $keys @return ?string[]
+     */
+    public static function legendSelected(array $keys): ?array
+    {
+        $saved = (Storage::readJson(data_path('aktievy.json')) ?? [])['legend_selected'] ?? null;
+        if (!is_array($saved)) {
+            return null;
+        }
+        return array_values(array_unique(array_filter($saved, static fn($key) => is_string($key) && in_array($key, $keys, true))));
+    }
+
+    /** Om $series är en värdepappersnyckel för en aktie i $tickers: "TICKER" eller "TICKER|K" med ett konto A–Z. @param string[] $tickers */
+    public static function isSeriesKey(mixed $series, array $tickers): bool
+    {
+        if (!is_string($series)) {
+            return false;
+        }
+        [$ticker, $account] = array_pad(explode('|', $series, 2), 2, null);
+        return ($account === null || preg_match('/^[A-Z]$/', $account) === 1) && in_array($ticker, $tickers, true);
+    }
+
     /** Lägen där aktiekurvorna visas på logaritmiska axlar. */
     public static function isLogScale(string $scale): bool
     {
@@ -457,7 +482,7 @@ final class Chart
     /**
      * Uppdaterar de angivna nycklarna i aktievy.json och behåller övriga.
      * $changes är nycklar att ersätta, eller en funktion som får nuvarande vy och returnerar den nya.
-     * @param array{start?: string, end?: string, log_scale?: bool, scale?: string, last_solo?: ?string, legend_sort?: string}|callable(array): array $changes
+     * @param array{start?: string, end?: string, log_scale?: bool, scale?: string, last_solo?: ?string, legend_sort?: string, legend_selected?: string[]}|callable(array): array $changes
      */
     public static function saveView(array|callable $changes): void
     {
@@ -467,7 +492,7 @@ final class Chart
             $view = is_callable($changes) ? $changes($current) : array_merge($current, $changes);
             // Samma format som Pythons json.dumps(indent=2): start, end, log_scale och sedan scale.
             $lines = [];
-            foreach (['start', 'end', 'log_scale', 'scale', 'last_solo', 'legend_sort', 'series_visible'] as $key) {
+            foreach (['start', 'end', 'log_scale', 'scale', 'last_solo', 'legend_sort', 'legend_selected', 'series_visible'] as $key) {
                 if (array_key_exists($key, $view)) {
                     // Tom karta skrivs som {} och inte [].
                     $value = $key === 'series_visible' ? (object)$view[$key] : $view[$key];
